@@ -22,8 +22,13 @@ def get_all_user(request):
 @api_view(['POST'])
 @renderer_classes([JSONRenderer])
 def add_user(request):
-    serialized_user = CustomUserSerializer(CustomUser, request.data)
+    response = {}
+    user = CustomUser()
+    serialized_user = CustomUserSerializer(user, request.data)
     if serialized_user.is_valid():
         serialized_user.save()
-        return Response(serialized_user.data)
-    return Response(serialized_user.error, status=status.HTTP_400_BAD_REQUEST)
+        response['error'] = False
+        response['message'] = 'successfully added!'
+        response['data'] = serialized_user.data
+        return Response(response)
+    return Response(serialized_user.errors, status=status.HTTP_400_BAD_REQUEST)
