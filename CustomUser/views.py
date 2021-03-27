@@ -1,6 +1,3 @@
-from django.shortcuts import render
-from pip._vendor.chardet import InputState
-
 from .models import CustomUser
 from rest_framework.response import Response
 
@@ -9,10 +6,10 @@ from rest_framework import status
 from .serializer import CustomUserSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, renderer_classes, authentication_classes, permission_classes
 
+# read this : https://simpleisbetterthancomplex.com/tutorial/2018/12/19/how-to-use-jwt-authentication-with-django-rest-framework.html#how-jwt-works
 
 # Create your views here.
 
