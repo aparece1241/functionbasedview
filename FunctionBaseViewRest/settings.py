@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'CustomUser.apps.CustomuserConfig',
     'rest_framework',
+    'rest_framework.authtoken',
+    'CustomUser.apps.CustomuserConfig',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +53,14 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'FunctionBaseViewRest.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+	'rest_framework.authentication.TokenAuthentication',		
+    ]
+
+}
+
 
 TEMPLATES = [
     {
