@@ -1,5 +1,8 @@
 from .models import CustomUser
 from rest_framework.response import Response
+import json
+
+from django.contrib.auth.hashers import make_password
 
 # Import the serializer
 from rest_framework import status
@@ -50,6 +53,7 @@ def get_user_by_id(request, id):
 def add_user(request):
     response = {}
     user = CustomUser()
+    print(request.data)
     serialized_user = CustomUserSerializer(user, request.data)
     if serialized_user.is_valid():
         serialized_user.save()
@@ -66,13 +70,18 @@ def add_user(request):
 @permission_classes([IsAuthenticated])
 def update_user(request, id):
     response = {}
-    user = CustomUser.objects.get(id=id)
-    serializer = CustomUserSerializer(user, request.data)
-    if serializer.is_valid():
-        serializer.save()
-        response['error']= False
+    try:
+        user = CustomUser.objects.filter(id=id)
+        payload = json.loads(request.body)
+        if payload['password']:
+            payload['password'] = make_password(payload['password'])
+        user.update(**payload)
         response['message'] = 'Success'
-        response['data'] = serializer.data
-        return Response(response)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        response['error'] = False
+        response['status'] = status.HTTP_200_OK
+    except:
+        response['error'] = True
+        response['message'] = 'Something went wrong'
+        response['status'] = status.HTTP_400_BAD_REQUEST
 
+    return Response(response, status=response['status'])
