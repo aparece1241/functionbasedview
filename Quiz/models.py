@@ -1,7 +1,4 @@
 from django.db import models
-from CustomUser.models import CustomUser
-
-# Create your models here.
 
 class Quiz(models.Model):
 
@@ -10,7 +7,7 @@ class Quiz(models.Model):
 		ACTIVATED = 'activated'
 
 	title = models.CharField(max_length=225)
-	author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+	author = models.ForeignKey('CustomUser.CustomUser', related_name='Quiz_author' ,on_delete=models.CASCADE)
 	code = models.CharField(max_length=100)
 	limit = models.IntegerField()
 	start_date = models.DateField(default=None)
@@ -30,7 +27,7 @@ class Question(models.Model):
 	type = models.CharField(default=None, choices=QuestionType.choices, max_length=50)
 	points = models.IntegerField(default=1)
 	answer = models.CharField(max_length=200)
-	quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+	quiz_id = models.ForeignKey(Quiz, related_name='Quiz_question', on_delete=models.CASCADE)
 
 	def __str__(self):
 		return self.question
