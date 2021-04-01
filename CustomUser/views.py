@@ -32,7 +32,7 @@ def user_action(request, pk=None):
             user = CustomUser.objects.get(pk=pk)
             data = CustomUserSerializer(user, many=False)
         if request.method == 'GET' and not pk:
-            users = CustomUser
+            users = CustomUser.objects.all()
             data = CustomUserSerializer(users, many=True)
         if request.method == 'POST':
             user = CustomUser()
@@ -43,12 +43,21 @@ def user_action(request, pk=None):
                 response['data'] = {}
                 response['status'] = status.HTTP_408_REQUEST_TIMEOUT
             data.save()
-        if request.method == 'PATCH':
-
+            data = user
+        if request.method == 'PATCH' and pk:
+            user = CustomUser.objects.filter(id=pk)
+            payload = json.loads(request.body)
+            if payload['password']:
+                payload['password'] = make_password(payload['password'])
+            user.update(**payload)
+            data = user
+        if request.method == 'DELETE':
+            user.delete()
+            data = user
 
         response['message'] = 'Success'
         response['status'] = status.HTTP_200_OK
-        response['data'] = data
+        response['data'] = data.data
         response['error'] = False
     except:
         response['message'] = 'Something wrong'
